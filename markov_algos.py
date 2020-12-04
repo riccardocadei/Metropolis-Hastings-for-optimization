@@ -67,7 +67,6 @@ def Delta_computation(x, y, k, params):
     if all(k in cities for cities in city_maxs):
         max_dist_smallest = max_distance(smallest, coords)
         Delta = Delta - (1/4) * lambda_ * n * np.pi * x_is_biggest * ((max_dist_biggest)**2 - (max_dist_smallest)**2)
-        return Delta
 
     # adding k doesn't change the maximum distance, so both max distance of x and y are equal
     return Delta

@@ -5,11 +5,11 @@ Deploying a 5G Network in a country
 
 - [x] write functions for the plots
 - [x] optimize delta
-- [ ] memorize the best
+- [x] memorize the best
 - [ ] benchmarking of parameters : range of lambda, range of beta, n_iter, for different models
 - [ ] handle the overflow warning that appears sometimes ?
 - [ ] report: properly explain our implementation, and answer the questions
-- [ ] compare naive implementation with our optimization (we optimize the time mostly ? not sure)
+- [ ] compare naive implementation with our optimization
 - [ ] change docstring to talk only about f, not g
 - [ ] script run.py for competition
 - [ ] have a nice notebook

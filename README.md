@@ -8,7 +8,7 @@ Deploying a 5G Network in a country
 - [x] memorize the best
 - [x] pre compute matrix of distances (still to do some debugging in the comments)
 - [x] nice python files (Anita)
-- [ ] docstring (Anita)
+- [x] docstring (Anita)
 - [ ] compare starting state (Riccardo)
 - [ ] benchmarking of parameters : range of beta, n_iter, for different models (Anita)
 - [ ] have a nice notebook (Riccardo)

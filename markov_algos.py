@@ -27,11 +27,8 @@ def Delta_computation(x, y, k, lambda_, data):
     x: ndarray of shape (n,)
     y: ndarray of shape (n,), the proposed move
     k: int, the index of the digit different in x and y
-    params: tuple (lambda_, n, coords, pop), where
-                lambda_ is the fixed value of the deployment cost,
-                n is the fixed number of cities,
-                coords is the (n,2) array containing the coordinates of each cities
-                pop is the (n,) array containing the (normalized) population of each cities
+    lambda_: float, the fixed value of the deployment cost
+    data: Dataset
 
     Returns
     -------
@@ -82,11 +79,8 @@ def forward(beta, x, lambda_, data):
     ----------
     beta: float, the distribution parameter
     x: ndarray of shape (n,)
-    params: tuple (lambda_, n, coords, pop), where
-                lambda_ is the fixed value of the deployment cost,
-                n is the fixed number of cities,
-                coords is the (n,2) array containing the coordinates of each cities
-                pop is the (n,) array containing the (normalized) population of each cities
+    lambda_: float, the fixed value of the deployment cost
+    data: Dataset
 
     Returns
     -------
@@ -120,11 +114,9 @@ def metropolis_hastings(beta, x, n_iter, best_x_visited, lambda_, data, ax_size=
     beta: float, the distribution parameter
     x: ndarray of shape (n,)
     n_iter: int, the number of iterations to run the Markov chain
-    params: tuple (lambda_, n, coords, pop), where
-                lambda_ is the fixed value of the deployment cost,
-                n is the fixed number of cities,
-                coords is the (n,2) array containing the coordinates of each cities
-                pop is the (n,) array containing the (normalized) population of each cities
+    best_x_visited: ndarray of shape (n,), the best state visited so far
+    lambda_: float, the fixed value of the deployment cost
+    data: Dataset
     ax_size: the subplot axis in which to plot the evolution of the number of cities selected at each step
              if None, no plot is created
     ax_obj: the subplot axis in which to plot the evolution of the objectif function at each step
@@ -133,6 +125,7 @@ def metropolis_hastings(beta, x, n_iter, best_x_visited, lambda_, data, ax_size=
     Returns
     -------
     x: the final state of the Markov chain
+    best_x_visited: the best state visited so far
     """
     N = list(range(n_iter + 1))
     if ax_size:
@@ -173,18 +166,18 @@ def metropolis_hastings(beta, x, n_iter, best_x_visited, lambda_, data, ax_size=
 
 def simulated_annealing(betas, n_iter, lambda_, data, verbose=False, plot_size=False, plot_obj=False):
     """
-    Runs the Metropolis-Hastings algorithm for each beta in the list betas. For the first run, choose
+    Runs the Metropolis-Hastings algorithm for each beta in the list betas.
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    For the first run, choose
     the starting state x at random, then start from the previous ending state.
 
     Parameters
     ----------
     betas: list of increasing beta (floats)
     n_iter: int, number of iteration for each beta (temperature)
-    params: tuple (lambda_, n, coords, pop), where
-                lambda_ is the fixed value of the deployment cost,
-                n is the fixed number of cities,
-                coords is the (n,2) array containing the coordinates of each cities
-                pop is the (n,) array containing the (normalized) population of each cities
+    lambda_: float, the fixed value of the deployment cost
+    data: Dataset
     verbose: boolean, whether to print the running time of each Metropolis-Hastings algorithm
     plot_size: boolean, whether to plot the evolution of the number of cities selected for each beta
     plot_obj: boolean, whether to plot the evolution of the objectif function for each beta
@@ -222,6 +215,7 @@ def simulated_annealing(betas, n_iter, lambda_, data, verbose=False, plot_size=F
             print("[step {}/{}] Time spent on beta = {:.3f} : {:.3f} sec"
                   .format(k + 1, len(betas), beta, end - start))
 
+    # keep only the best state
     if f(vect_to_S(best_x_visited), lambda_, data) > f(vect_to_S(x), lambda_, data):
         x = best_x_visited
 

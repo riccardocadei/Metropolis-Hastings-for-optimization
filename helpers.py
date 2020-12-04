@@ -31,11 +31,8 @@ def f(S, lambda_, data):
     Parameters
     ----------
     S: subset of P({0,..., n-1}) as an array of shape (k,) with k the size of S
-    params: tuple (lambda_, n, coords, pop), where
-                lambda_ is the fixed value of the deployment cost,
-                n is the fixed number of cities,
-                coords is the (n,2) array containing the coordinates of each cities
-                pop is the (n,) array containing the (normalized) population of each cities
+    lambda_: float, the fixed value of the deployment cost
+    data: Dataset
 
     Returns
     -------
@@ -58,7 +55,7 @@ def max_distance(x, dists, max_cities=False):
     Parameters
     ----------
     x: ndarray of shape (n,)
-    coords: (n, 2) array containing the coordinates of each cities
+    dists: ndarray, the matrix distance between all cities in the working dataset
     max_cities: boolean, whether to return the city couples realising the argmax
 
     Return
@@ -73,8 +70,9 @@ def max_distance(x, dists, max_cities=False):
     if not max_cities:
         return max_dist
 
-    ind_maxs = np.argwhere(dists[S_x,:][:,S_x] == max_dist if len(S_x) > 1 else 0) # indices in dist matrice of the max distance
-    city_maxs = np.zeros(ind_maxs.shape[0], dtype=tuple) # change the indices to the city number
+    # also return the couple of cities realising the maximum distance
+    ind_maxs = np.argwhere(dists[S_x,:][:,S_x] == max_dist if len(S_x) > 1 else 0)  # indices in dist matrice of the max distance
+    city_maxs = np.zeros(ind_maxs.shape[0], dtype=tuple)                            # change the indices to the city number
     for n, (i, j) in enumerate(ind_maxs):
         city_maxs[n] = (S_x[i], S_x[j])
 

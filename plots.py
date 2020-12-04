@@ -57,7 +57,7 @@ def plot_avg_size(G, lambdas, betas, n_iter, nb_instances, verbose=False):
     plt.title("Expectation of the number of cities over multiple instances of G1 for different lambdas")
     plt.xlabel("Lambda")
     plt.ylabel("Expectation")
-    plt.savefig('avg_size_{}to{}.pdf'.format(lambdas[0], lambdas[-1]))
+    plt.savefig('plots/avg_size_{}to{}.pdf'.format(lambdas[0], lambdas[-1]))
 
 def plot_avg_obj(G, lambdas, betas, n_iter, nb_instances, verbose=False):
     E = [avg_obj_S(G, betas, lambda_, n_iter, nb_instances, verbose) for lambda_ in lambdas]
@@ -66,4 +66,4 @@ def plot_avg_obj(G, lambdas, betas, n_iter, nb_instances, verbose=False):
     plt.title("Expectation of the objective function over multiple instances of G1 for different lambdas")
     plt.xlabel("Lambda")
     plt.ylabel("Expectation")
-    plt.savefig('avg_obj_{}to{}.pdf'.format(lambdas[0], lambdas[-1]))
+    plt.savefig('plots/avg_obj_{}to{}.pdf'.format(lambdas[0], lambdas[-1]))

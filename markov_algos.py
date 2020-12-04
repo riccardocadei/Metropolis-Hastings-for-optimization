@@ -229,11 +229,11 @@ def simulated_annealing(betas, n_iter, lambda_, data, verbose=False, plot_size=F
 
     if plot_size:
         fig_size.tight_layout()
-        figtitle = 'size_{}.pdf'.format(lambda_)
+        figtitle = 'plots/size_{}.pdf'.format(lambda_)
         fig_size.savefig(figtitle)
     if plot_obj:
         fig_obj.tight_layout()
-        figtitle = 'obj_{}.pdf'.format(lambda_)
+        figtitle = 'plots/obj_{}.pdf'.format(lambda_)
         fig_obj.savefig(figtitle)
 
     return S_star_approx

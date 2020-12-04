@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 import copy
 import time
 
-
-def best_S(G, betas, lambda_, n_iter, nb_instances, verbose=False):
+def sample_S_approx(G, betas, lambda_, n_iter, nb_instances, verbose=False):
     """
     Compute approximation of S* for nb_instances different instances of G.
     The approximation follows the simulated annealing algorithm.
@@ -20,17 +19,17 @@ def best_S(G, betas, lambda_, n_iter, nb_instances, verbose=False):
     list_params = []
 
     for k in range(nb_instances):
-        g = G()
-        n, coords, pop = g1.N, g1.x, g1.v
-        params = (lambda_, n, coords, pop)
+        data = G()
+        n, coords, pop = data.N, data.x, data.v
         x = np.random.randint(0, 2, n)
+        best_x_visited = x
 
-        # run the Metropolis-Hastings algorithm for each beta == simulated annealing
+        # run the Metropolis-Hastings algorithm for each beta
         for beta in betas:
-            x = metropolis_hastings(beta, x, n_iter, params)
+            x, best_x_visited = metropolis_hastings(beta, x, n_iter, best_x_visited, lambda_, data)
 
         list_S_approx.append(vect_to_S(x))
-        list_params.append(params)
+        list_params.append(lambda_, data)
 
         if verbose:
             print("[lambda={} : {}/{}]".format(lambda_, k + 1, nb_instances))
@@ -41,15 +40,15 @@ def avg_size_S(G, betas, lambda_, n_iter, nb_instances, verbose=False):
     """
     Compute the average size of selected cities for the (approximated) best set S.
     """
-    S_approxs, _ = best_S(G, betas, lambda_, n_iter, nb_instances, verbose)
-    return np.sum(list(map(len, S_approxs))) / nb_instances
+    list_S_approx, _ = sample_S_approx(G, betas, lambda_, n_iter, nb_instances, verbose)
+    return np.sum(list(map(len, list_S_approx))) / nb_instances
 
 def avg_obj_S(G, betas, lambda_, n_iter, nb_instances, verbose=False):
     """
     Compute the average value of the objective function for the (approximated) best set S.
     """
-    S_approxs, list_params = best_S(G, betas, lambda_, n_iter, nb_instances, verbose)
-    return np.sum(list(map(f, S_approxs, list_params))) / nb_instances
+    list_S_approx, list_params = sample_S_approx(G, betas, lambda_, n_iter, nb_instances, verbose)
+    return np.sum(list(map(f, list_S_approx, list_params))) / nb_instances
 
 def plot_avg_size(G, lambdas, betas, n_iter, nb_instances, verbose=False):
     E = [avg_size_S(G, betas, lambda_, n_iter, nb_instances, verbose) for lambda_ in lambdas]

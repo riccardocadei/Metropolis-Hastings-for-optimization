@@ -164,7 +164,7 @@ def metropolis_hastings(beta, x, n_iter, best_x_visited, lambda_, data, ax_size=
     return x, best_x_visited
 
 
-def simulated_annealing(betas, n_iter, lambda_, data, verbose=False, plot_size=False, plot_obj=False):
+def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=False, plot_size=False, plot_obj=False):
     """
     Runs the Metropolis-Hastings algorithm for each beta in the list betas.
 
@@ -194,12 +194,7 @@ def simulated_annealing(betas, n_iter, lambda_, data, verbose=False, plot_size=F
         fig_obj, axs_obj = plt.subplots(len(betas), figsize=(10,30))
         fig_obj.suptitle('Evolution of objectif function (lambda={})'.format(lambda_))
 
-    # start by picking a random state on the hypercube of dimension n
-    x = np.random.randint(low=0, high=2, size=data.N)
-
-    # Riccardo: fix the starting point
-    #x = np.zeros(data.N)
-    #x = np.ones(data.N)
+    x = starting_state
 
     best_x_visited = x
     # run Metropolis-Hastings algorithm for each beta
@@ -219,7 +214,7 @@ def simulated_annealing(betas, n_iter, lambda_, data, verbose=False, plot_size=F
     if f(vect_to_S(best_x_visited), lambda_, data) > f(vect_to_S(x), lambda_, data):
         x = best_x_visited
 
-    S_star_approx = vect_to_S(x)
+    S_approx = vect_to_S(x)
 
     if plot_size:
         fig_size.tight_layout()
@@ -230,4 +225,4 @@ def simulated_annealing(betas, n_iter, lambda_, data, verbose=False, plot_size=F
         figtitle = 'plots/obj_{}.pdf'.format(lambda_)
         fig_obj.savefig(figtitle)
 
-    return S_star_approx
+    return S_approx

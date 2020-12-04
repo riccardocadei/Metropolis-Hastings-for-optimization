@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 from helpers import *
 from markov_algos import *
+from DatasetGenerator import *
 
 
 def sample_S_approx(G, betas, lambda_, n_iter, nb_instances, verbose=False):

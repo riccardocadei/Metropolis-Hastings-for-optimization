@@ -6,7 +6,7 @@ from markov_algos import *
 from DatasetGenerator import *
 
 
-def sample_S_approx(G, betas, lambda_, n_iter, nb_instances, verbose=False):
+def sample_S_approx(datas, betas, lambda_, n_iter, verbose=False):
     """
     Compute nb_instances approximation of S* for different instances of G.
     The approximation follows the simulated annealing algorithm. The starting state
@@ -21,30 +21,30 @@ def sample_S_approx(G, betas, lambda_, n_iter, nb_instances, verbose=False):
     list_lambdas = []
     list_datas = []
 
-    starting_state = np.random.randint(0, 2, G().N)
-    for k in range(nb_instances):
-        data = G()
+    starting_state = np.random.randint(0, 2, datas[0].N)
+    for k in range(len(datas)):
 
-        S_approx = simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose)
+        S_approx = simulated_annealing(starting_state, betas, n_iter, lambda_, datas[k], verbose)
 
         list_S_approx.append(S_approx)
         list_lambdas.append(lambda_)
-        list_datas.append(data)
 
         if verbose:
             print("[lambda={} : {}/{}]".format(lambda_, k + 1, nb_instances))
 
-    return list_S_approx, list_lambdas, list_datas
+    return list_S_approx, list_lambdas
 
-def avg(G, betas, lambda_, n_iter, nb_instances, verbose=False):
-    list_S_approx, list_lambdas, list_datas = sample_S_approx(G, betas, lambda_, n_iter, nb_instances, verbose)
-    avg_obj = np.sum(list(map(f, list_S_approx, list_lambdas, list_datas))) / nb_instances
-    avg_size = np.sum(list(map(len, list_S_approx))) / nb_instances
+def avg(datas, betas, lambda_, n_iter, verbose=False):
+    list_S_approx, list_lambdas = sample_S_approx(datas, betas, lambda_, n_iter, verbose)
+    print(list(map(f, list_S_approx, list_lambdas, datas)))
+    avg_obj = np.sum(list(map(f, list_S_approx, list_lambdas, datas))) / len(datas)
+    avg_size = np.sum(list(map(len, list_S_approx))) / len(datas)
 
     return [avg_obj, avg_size]
 
 def plot_avg_lambda(G, lambdas, betas, n_iter, nb_instances, verbose=False):
-    E = [avg(G, betas, lambda_, n_iter, nb_instances, verbose) for lambda_ in lambdas]
+    datas = [G() for i in range(nb_instances)]
+    E = [avg(datas, betas, lambda_, n_iter, verbose) for lambda_ in lambdas]
     E = np.array(E)
 
     fig_obj, ax_obj = plt.subplots(figsize=(1 + len(lambdas), 4))

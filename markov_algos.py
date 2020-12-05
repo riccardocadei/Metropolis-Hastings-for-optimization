@@ -201,8 +201,8 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
         end = time.time()
 
         if plot:
-            nb_cities.append(nb_cities_beta)
-            objs.append(objs_beta)
+            nb_cities += nb_cities_beta
+            objs += objs_beta
 
         if verbose:
             print("[step {}/{}] Time spent on beta = {:.3f} : {:.3f} sec"
@@ -215,23 +215,24 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
     S_approx = vect_to_S(x)
 
     if plot:
-        fig, ax = plt.subplots(figsize=(20, 5), constrained_layout=True)
+        fig, axs = plt.subplots(2, figsize=(20, 10), constrained_layout=True)
         fig.suptitle('Evolution of the approximate maximum (for lambda={})'.format(lambda_), fontsize=20)
-        total_steps = [range(n_iter * len(betas))]
-        betas = [i * n_iter for i in range(len(betas))]
+        total_steps = list(range(len(objs)))
+        betas_changes = [i * n_iter for i in range(len(betas) + 1)]
 
-        ax.plot(total_steps, objs, 'o')
-        ax.vlines(betas, 0, 1)
-        fig.show()
-            #     ax, ax2 = axs
-    #     ax.plot(N, objs, 'o', color='blue')
-    #     ax2.plot(N, nb_cities, 'o', color='red')
+        axs[0].plot(total_steps, objs, 'o', color='blue')
+        for b in betas_changes:
+            axs[0].axvline(b)
+        axs[0].set_xlabel("Iterations")
+        axs[0].set_ylabel("Objective function")
 
-    #     ax.set_xlabel("Iteration")
-    #     ax.set_ylabel("Objective function", color='blue')
-    #     ax2.set_ylabel("Number of cities", color='red')
+        axs[1].plot(total_steps, nb_cities, 'o', color='red')
+        for b in betas_changes:
+            axs[1].axvline(b)
+        axs[1].set_xlabel("Iterations")
+        axs[1].set_ylabel("Number of cities")
 
-        # figtitle = 'plots/global_evol_{}_{}.pdf'.format(lambda_, type(data))
-        # fig.savefig(figtitle)
+        figtitle = 'plots/global_evol_{}_{}.pdf'.format(lambda_, type(data))
+        fig.savefig(figtitle)
 
     return S_approx

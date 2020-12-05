@@ -128,8 +128,9 @@ def metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, plot=False):
     N = list(range(n_iter + 1))
     # if axs:
     #     axs[0].set_title("Evolution of the approximate maximum when beta = {:.3f}".format(beta))
-    #     nb_cities = [np.count_nonzero(x)]
-    #     objs = [f(vect_to_S(x), lambda_, data)]
+    if plot:
+        nb_cities = [np.count_nonzero(x)]
+        objs = [f(vect_to_S(x), lambda_, data)]
 
     max_f_visited = f(vect_to_S(best_x), lambda_, data)
     f_x = f(vect_to_S(x), lambda_, data)

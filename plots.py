@@ -52,15 +52,17 @@ def plot_avg_lambda(G, lambdas, betas, n_iter, nb_instances, verbose=False):
 
     fig_obj, ax_obj = plt.subplots(figsize=(1 + len(lambdas), 4))
     ax_obj.plot(lambdas, E[:, 0], '+', ls=':')
-    ax_obj.set_xlabel("Lambda")
-    ax_obj.set_ylabel("Average max obj")
+    ax_obj.set_xlabel("Lambda", fontsize=25)
+    ax_obj.set_ylabel("Average max obj", fontsize=25)
+    ax_obj.tick_params(labelsize=17)
 
     fig_size, ax_size = plt.subplots(figsize=(1 + len(lambdas), 4))
     ax_size.plot(lambdas, E[:, 1], '+', ls=':')
-    ax_size.set_xlabel("Lambda")
-    ax_size.set_ylabel("Average maxi size")
-
-    fig_obj.savefig('plots/avg_obj_{}to{}.pdf'.format(lambdas[0], lambdas[-1]))
-    fig_size.savefig('plots/avg_size_{}to{}.pdf'.format(lambdas[0], lambdas[-1]))
-    fig_obj.show()
-    fig_size.show()
+    ax_size.set_xlabel("Lambda", fontsize=25)
+    ax_size.set_ylabel("Average maxi size", fontsize=25)
+    ax_size.tick_params(labelsize=17)
+    
+    data_name = "G1" if isinstance(datas[0], G1) else "G2"
+    
+    fig_obj.savefig('plots\\avg_obj_{}.pdf'.format(data_name))
+    fig_size.savefig('plots\\avg_size_{}.pdf'.format(data_name))

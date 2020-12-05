@@ -9,6 +9,7 @@ import copy
 from time import time
 
 from helpers import *
+from DatasetGenerator import *
 
 
 def Delta_computation(x, y, k, lambda_, data):
@@ -190,11 +191,6 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
 
     # run Metropolis-Hastings algorithm for each beta
     for k, beta in enumerate(betas):
-        # axs = None
-        # if plot :
-        #     ax_k = ax[k]
-        #     ax_k2 = ax_k.twinx()
-        #     axs = (ax_k, ax_k2)
 
         start = time.time()
         x, best_x, nb_cities_beta, objs_beta = metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, plot)
@@ -216,24 +212,26 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
 
     if plot:
         fig, axs = plt.subplots(2, figsize=(20, 10), constrained_layout=True)
-        fig.suptitle('Evolution of the state visited by the Markov chain (for lambda={})'.format(lambda_), fontsize=20)
+        # fig.suptitle('Evolution of the state visited by the Markov chain (for lambda={})'.format(lambda_), fontsize=20)
         total_steps = list(range(len(objs)))
         betas_changes = [i * n_iter for i in range(len(betas) + 1)]
 
         axs[0].plot(total_steps, objs, 'o', color='blue')
         for b in betas_changes:
             axs[0].axvline(b, color='blue')
-        axs[0].set_xlabel("Iterations")
-        axs[0].set_ylabel("Objective function")
+        axs[0].set_xlabel("Iterations", fontsize=25)
+        axs[0].set_ylabel("Objective function", fontsize=25)
+        axs[0].tick_params(labelsize=17)
 
         axs[1].plot(total_steps, nb_cities, 'o', color='red')
         for b in betas_changes:
             axs[1].axvline(b, color='red')
-        axs[1].set_xlabel("Iterations")
-        axs[1].set_ylabel("Number of cities")
+        axs[1].set_xlabel("Iterations", fontsize=25)
+        axs[1].set_ylabel("Number of cities", fontsize=25)
+        axs[1].tick_params(labelsize=17)
 
-
-        figtitle = 'plots/global_evol_{}_{}.pdf'.format(lambda_, type(data))
+        data_name = "G1" if isinstance(data, G1) else "G2"
+        figtitle = 'plots\global_evol_{}_{}.pdf'.format(lambda_, data_name)
         fig.savefig(figtitle)
 
     return S_approx

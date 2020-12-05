@@ -222,15 +222,16 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
 
         axs[0].plot(total_steps, objs, 'o', color='blue')
         for b in betas_changes:
-            axs[0].axvline(b)
+            axs[0].axvline(b, color='blue')
         axs[0].set_xlabel("Iterations")
         axs[0].set_ylabel("Objective function")
 
         axs[1].plot(total_steps, nb_cities, 'o', color='red')
         for b in betas_changes:
-            axs[1].axvline(b)
+            axs[1].axvline(b, color='red')
         axs[1].set_xlabel("Iterations")
         axs[1].set_ylabel("Number of cities")
+
 
         figtitle = 'plots/global_evol_{}_{}.pdf'.format(lambda_, type(data))
         fig.savefig(figtitle)

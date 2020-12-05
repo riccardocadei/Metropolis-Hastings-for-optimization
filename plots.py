@@ -21,7 +21,7 @@ def sample_S_approx(datas, betas, lambda_, n_iter, verbose=False):
     list_lambdas = []
     list_datas = []
 
-    starting_state = np.random.randint(0, 2, datas[0].N)
+    starting_state = np.zeros(datas[0].N)
     for k in range(len(datas)):
 
         S_approx = simulated_annealing(starting_state, betas, n_iter, lambda_, datas[k], verbose)

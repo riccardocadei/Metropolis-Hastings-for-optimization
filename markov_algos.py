@@ -128,7 +128,7 @@ def metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, axs=None):
     N = list(range(n_iter + 1))
     if axs:
         axs[0].set_title("Evolution of the approximate maximum when beta = {:.3f}".format(beta))
-        nb_cities = [np.count_nonzero(x)]
+        nb_cities = [np.count_nonzero(x) / data.N]
         objs = [f(vect_to_S(x), lambda_, data)]
 
     max_f_visited = f(vect_to_S(best_x), lambda_, data)
@@ -145,13 +145,13 @@ def metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, axs=None):
             best_x = x
 
         if axs:
-            nb_cities.append(np.count_nonzero(x))
+            nb_cities.append(np.count_nonzero(x) / data.N)
             objs.append(f(vect_to_S(x), lambda_, data))
 
     if axs:
         ax, ax2 = axs
-        ax.plot(N, objs, 'o', ':', color='blue')
-        ax2.plot(N, nb_cities, 'o', ':', color='red')
+        ax.plot(N, objs, 'o', color='blue')
+        ax2.plot(N, nb_cities, 'o', color='red')
 
         ax.set_xlabel("Iteration")
         ax.set_ylabel("Objective function", color='blue')
@@ -180,7 +180,7 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
     S_approx: the approximation of the optimizing set.
     """
     if plot:
-        fig, axs = plt.subplots(len(betas), figsize=(10, 5*len(betas)), constrained_layout=True)
+        fig, ax = plt.subplots(len(betas), figsize=(10, 5*len(betas)), constrained_layout=True)
         fig.suptitle('Evolution of the approximate maximum (for lambda={})'.format(lambda_), fontsize=20)
 
     x = starting_state
@@ -190,7 +190,7 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
     for k, beta in enumerate(betas):
         axs = None
         if plot :
-            ax_k = axs[k]
+            ax_k = ax[k]
             ax_k2 = ax_k.twinx()
             axs = (ax_k, ax_k2)
 

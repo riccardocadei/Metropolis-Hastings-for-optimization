@@ -2,6 +2,7 @@
 Class to generate a dataset of cities.
 """
 import scipy.stats as st
+import scipy as sp
 import numpy as np
 
 

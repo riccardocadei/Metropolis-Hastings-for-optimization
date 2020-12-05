@@ -36,7 +36,6 @@ def sample_S_approx(datas, betas, lambda_, n_iter, verbose=False):
 
 def avg(datas, betas, lambda_, n_iter, verbose=False):
     list_S_approx, list_lambdas = sample_S_approx(datas, betas, lambda_, n_iter, verbose)
-    print(list(map(f, list_S_approx, list_lambdas, datas)))
     avg_obj = np.sum(list(map(f, list_S_approx, list_lambdas, datas))) / len(datas)
     avg_size = np.sum(list(map(len, list_S_approx))) / len(datas)
 

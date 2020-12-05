@@ -21,9 +21,12 @@ def sample_S_approx(datas, betas, lambda_, n_iter, verbose=False):
     list_lambdas = []
     list_datas = []
 
+    
     starting_state = np.zeros(datas[0].N)
+    
     for k in range(len(datas)):
-
+        
+        starting_state[ datas[k].v == np.max(datas[k].v)] = 1
         S_approx = simulated_annealing(starting_state, betas, n_iter, lambda_, datas[k], verbose)
 
         list_S_approx.append(S_approx)
@@ -31,6 +34,7 @@ def sample_S_approx(datas, betas, lambda_, n_iter, verbose=False):
 
         if verbose:
             print("[lambda={} : {}/{}]".format(lambda_, k + 1, nb_instances))
+        starting_state[ datas[k].v == np.max(datas[k].v)] = 0
 
     return list_S_approx, list_lambdas
 

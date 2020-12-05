@@ -216,7 +216,7 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
 
     if plot:
         fig, axs = plt.subplots(2, figsize=(20, 10), constrained_layout=True)
-        fig.suptitle('Evolution of the approximate maximum (for lambda={})'.format(lambda_), fontsize=20)
+        fig.suptitle('Evolution of the state visited by the Markov chain (for lambda={})'.format(lambda_), fontsize=20)
         total_steps = list(range(len(objs)))
         betas_changes = [i * n_iter for i in range(len(betas) + 1)]
 

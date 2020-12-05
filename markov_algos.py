@@ -103,7 +103,7 @@ def forward(beta, x, lambda_, data):
 
     return (y, Delta) if move else (x, 0)
 
-def metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, axs=None):
+def metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, plot=False):
     """
     Apply the Metropolis_Hastings algorithm for n_iter steps, starting at state x.
     If given, enters the size of the selected cities in the plot ax_size
@@ -126,10 +126,10 @@ def metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, axs=None):
     best_x: the best state visited so far
     """
     N = list(range(n_iter + 1))
-    if axs:
-        axs[0].set_title("Evolution of the approximate maximum when beta = {:.3f}".format(beta))
-        nb_cities = [np.count_nonzero(x) / data.N]
-        objs = [f(vect_to_S(x), lambda_, data)]
+    # if axs:
+    #     axs[0].set_title("Evolution of the approximate maximum when beta = {:.3f}".format(beta))
+    #     nb_cities = [np.count_nonzero(x)]
+    #     objs = [f(vect_to_S(x), lambda_, data)]
 
     max_f_visited = f(vect_to_S(best_x), lambda_, data)
     f_x = f(vect_to_S(x), lambda_, data)
@@ -144,20 +144,22 @@ def metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, axs=None):
             max_f_visited = f_x
             best_x = x
 
-        if axs:
-            nb_cities.append(np.count_nonzero(x) / data.N)
+        if plot:
+            nb_cities.append(np.count_nonzero(x))
             objs.append(f(vect_to_S(x), lambda_, data))
 
-    if axs:
-        ax, ax2 = axs
-        ax.plot(N, objs, 'o', color='blue')
-        ax2.plot(N, nb_cities, 'o', color='red')
+    if plot:
+        return x, best_x, nb_cities, objs
+    # if axs:
+    #     ax, ax2 = axs
+    #     ax.plot(N, objs, 'o', color='blue')
+    #     ax2.plot(N, nb_cities, 'o', color='red')
 
-        ax.set_xlabel("Iteration")
-        ax.set_ylabel("Objective function", color='blue')
-        ax2.set_ylabel("Number of cities", color='red')
+    #     ax.set_xlabel("Iteration")
+    #     ax.set_ylabel("Objective function", color='blue')
+    #     ax2.set_ylabel("Number of cities", color='red')
 
-    return x, best_x
+    return x, best_x, None, None
 
 
 def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=False, plot=False):
@@ -179,24 +181,27 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
     -------
     S_approx: the approximation of the optimizing set.
     """
-    if plot:
-        fig, ax = plt.subplots(len(betas), figsize=(10, 5*len(betas)), constrained_layout=True)
-        fig.suptitle('Evolution of the approximate maximum (for lambda={})'.format(lambda_), fontsize=20)
-
     x = starting_state
     best_x = x
 
+    if plot:
+        nb_cities, objs = [], []
+
     # run Metropolis-Hastings algorithm for each beta
     for k, beta in enumerate(betas):
-        axs = None
-        if plot :
-            ax_k = ax[k]
-            ax_k2 = ax_k.twinx()
-            axs = (ax_k, ax_k2)
+        # axs = None
+        # if plot :
+        #     ax_k = ax[k]
+        #     ax_k2 = ax_k.twinx()
+        #     axs = (ax_k, ax_k2)
 
         start = time.time()
-        x, best_x = metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, axs)
+        x, best_x, nb_cities_beta, objs_beta = metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, plot)
         end = time.time()
+
+        if plot:
+            nb_cities.append(nb_cities_beta)
+            objs.append(objs_beta)
 
         if verbose:
             print("[step {}/{}] Time spent on beta = {:.3f} : {:.3f} sec"
@@ -209,7 +214,23 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
     S_approx = vect_to_S(x)
 
     if plot:
-        figtitle = 'plots/global_evol_{}.pdf'.format(lambda_)
-        fig.savefig(figtitle)
+        fig, ax = plt.subplots(figsize=(20, 5), constrained_layout=True)
+        fig.suptitle('Evolution of the approximate maximum (for lambda={})'.format(lambda_), fontsize=20)
+        total_steps = [range(n_iter * len(betas))]
+        betas = [i * n_iter for i in range(len(betas))]
+
+        ax.plot(total_steps, objs, 'o')
+        ax.vlines(betas, 0, 1)
+        fig.show()
+            #     ax, ax2 = axs
+    #     ax.plot(N, objs, 'o', color='blue')
+    #     ax2.plot(N, nb_cities, 'o', color='red')
+
+    #     ax.set_xlabel("Iteration")
+    #     ax.set_ylabel("Objective function", color='blue')
+    #     ax2.set_ylabel("Number of cities", color='red')
+
+        # figtitle = 'plots/global_evol_{}_{}.pdf'.format(lambda_, type(data))
+        # fig.savefig(figtitle)
 
     return S_approx

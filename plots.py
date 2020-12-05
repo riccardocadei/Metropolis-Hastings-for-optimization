@@ -21,7 +21,7 @@ def sample_S_approx(G, betas, lambda_, n_iter, nb_instances, verbose=False):
     list_lambdas = []
     list_datas = []
 
-    starting_state = np.random.randint(0, 2, data.N)
+    starting_state = np.random.randint(0, 2, G().N)
     for k in range(nb_instances):
         data = G()
 
@@ -39,7 +39,7 @@ def sample_S_approx(G, betas, lambda_, n_iter, nb_instances, verbose=False):
 def avg(G, betas, lambda_, n_iter, nb_instances, verbose=False):
     list_S_approx, list_lambdas, list_datas = sample_S_approx(G, betas, lambda_, n_iter, nb_instances, verbose)
     avg_obj = np.sum(list(map(f, list_S_approx, list_lambdas, list_datas))) / nb_instances
-    avg_size = np.sum(list(map(len, list_S_approx))) / (nb_instances * 100)
+    avg_size = np.sum(list(map(len, list_S_approx))) / nb_instances
 
     return [avg_obj, avg_size]
 

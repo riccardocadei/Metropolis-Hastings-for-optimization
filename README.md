@@ -1,19 +1,38 @@
-# markov-chains-COM-516
-Deploying a 5G Network in a country
+# Metropolis-Hastings algorithm for optimization
 
-## What still needs to be done in the project
+### Problem
+In telecommunications, 5G networks are the next generation of broadband cellular networks. Telecommunication companies are actively testing and starting to roll them out in different parts of the world. The task of this project is to deliver a roadmap to test this new network while optimizing the  cost of the maintenance of the new installations. 
+We propose a Metropolis-Hastings based algorithm to find an approximate solution to this problem.
 
-- [x] write functions for the plots
-- [x] optimize delta
-- [x] memorize the best
-- [x] pre compute matrix of distances (still to do some debugging in the comments)
-- [x] nice python files (Anita)
-- [x] docstring (Anita)
-- [x] change docstring to talk only about f, not g
-- [ ] compare starting state (Riccardo)
-- [ ] benchmarking of parameters : range of beta, n_iter, for different models (Anita)
+More information about the problem can be found in the folder `references`.
 
-- [ ] report: properly explain our implementation, and answer the questions
-- [ ] compare naive implementation with our optimization (we optimize the time mostly ? not sure)
-- [ ] script run.py for competition
-- [ ] nice notebook that does all the plots
+### Team
+The project is accomplished by team `Aquarium` with members:
+- Riccardo Cadei: [@riccardocadei](https://github.com/riccardocadei)
+- Anita Dürr: [AnitaDurr](https://github.com/AnitaDurr)
+- Loïc Busson: [@loicbusson](https://github.com/loicbusson)
+
+### Environment
+The project has been developed and test with `python3.6`.
+The required library for running the models are `numpy`,`pandas` and`scipy`.
+The library for visualization is `matplotlib`.
+
+
+## Project structure
+
+### Istances generator
+
+`DatasetGenerator.py`: generators of instances of the problem
+
+### Algorithm
+
+`helpers.py`: useful functions to define the problem 
+`markov_algos.py`: Metropolis-Hasting based algorithm implementation
+
+### Notebook
+
+`main.ipynb`: hyper-parameter tuning and answers to the problem
+
+### Report
+
+`references/report.pdf`: a 4-pages report of the complete solution.

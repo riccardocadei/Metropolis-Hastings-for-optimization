@@ -9,7 +9,7 @@ More information about the problem can be found in the folder `references`.
 ### Team
 The project is accomplished by team `Aquarium` with members:
 - Riccardo Cadei: [@riccardocadei](https://github.com/riccardocadei)
-- Anita Dürr: [AnitaDurr](https://github.com/AnitaDurr)
+- Anita Dürr: [@AnitaDurr](https://github.com/AnitaDurr)
 - Loïc Busson: [@loicbusson](https://github.com/loicbusson)
 
 ### Environment

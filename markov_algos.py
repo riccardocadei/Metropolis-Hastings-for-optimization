@@ -103,7 +103,7 @@ def forward(beta, x, lambda_, data):
 
     return (y, Delta) if move else (x, 0)
 
-def metropolis_hastings(beta, x, n_iter, best_x_visited, lambda_, data, ax_size=None, ax_obj=None):
+def metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, axs=None):
     """
     Apply the Metropolis_Hastings algorithm for n_iter steps, starting at state x.
     If given, enters the size of the selected cities in the plot ax_size
@@ -114,96 +114,88 @@ def metropolis_hastings(beta, x, n_iter, best_x_visited, lambda_, data, ax_size=
     beta: float, the distribution parameter
     x: ndarray of shape (n,)
     n_iter: int, the number of iterations to run the Markov chain
-    best_x_visited: ndarray of shape (n,), the best state visited so far
+    best_x: ndarray of shape (n,), the best state visited so far
     lambda_: float, the fixed value of the deployment cost
     data: Dataset
-    ax_size: the subplot axis in which to plot the evolution of the number of cities selected at each step
-             if None, no plot is created
-    ax_obj: the subplot axis in which to plot the evolution of the objectif function at each step
-             if None, no plot is created
+    axs: tuple of size 2, the subplot axis in which to plot the evolution of the objectif function
+        and the number of cities selected at each step ; if None, no plot is created
 
     Returns
     -------
     x: the final state of the Markov chain
-    best_x_visited: the best state visited so far
+    best_x: the best state visited so far
     """
     N = list(range(n_iter + 1))
-    if ax_size:
+    if axs:
+        axs[0].set_title("Evolution of the approximate maximum when beta = {:.3f}".format(beta))
         nb_cities = [np.count_nonzero(x)]
-    if ax_obj:
-        costs = [f(vect_to_S(x), lambda_, data)]
+        objs = [f(vect_to_S(x), lambda_, data)]
 
-    max_f_visited = f(vect_to_S(best_x_visited), lambda_, data)
+    max_f_visited = f(vect_to_S(best_x), lambda_, data)
     f_x = f(vect_to_S(x), lambda_, data)
 
     # run the Markov chain for n_iter steps
     for _ in range(n_iter):
         x, Delta = forward(beta, x, lambda_, data)
-        # Delta = f(x)-f(y)
+
+        # memorize the best visited state x
         f_x = f_x-Delta
         if f_x > max_f_visited:
             max_f_visited = f_x
-            best_x_visited = x
+            best_x = x
 
-        if ax_size:
+        if axs:
             nb_cities.append(np.count_nonzero(x))
-        if ax_obj:
-            costs.append(f(vect_to_S(x), lambda_, data))
+            objs.append(f(vect_to_S(x), lambda_, data))
 
-    if ax_size:
-        ax_size.plot(N, nb_cities, 'o')
-        ax_size.set_title("Evolution of the number of cities throughout {} iterations when beta = {:.3f}".format(n_iter, beta))
-        ax_size.set_xlabel("Iteration")
-        ax_size.set_ylabel("Number of cities")
-    if ax_obj:
-        ax_obj.plot(N, costs, 'o')
-        ax_obj.set_title("Evolution of the objective function throughout {} iterations when beta = {:.3f}".format(n_iter, beta))
-        ax_obj.set_xlabel("Iteration")
-        ax_obj.set_ylabel("Objective function f")
+    if axs:
+        ax, ax2 = axs
+        ax.plot(N, objs, 'o', ':', color='blue')
+        ax2.plot(N, nb_cities, 'o', ':', color='red')
 
-    return x, best_x_visited
+        ax.set_xlabel("Iteration")
+        ax.set_ylabel("Objective function", color='blue')
+        ax2.set_ylabel("Number of cities", color='red')
+
+    return x, best_x
 
 
-def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=False, plot_size=False, plot_obj=False):
+def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=False, plot=False):
     """
     Runs the Metropolis-Hastings algorithm for each beta in the list betas.
 
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    For the first run, choose
-    the starting state x at random, then start from the previous ending state.
-
     Parameters
     ----------
+    starting_state: ndarray of shape (n,), the state to start the Markov chain
     betas: list of increasing beta (floats)
     n_iter: int, number of iteration for each beta (temperature)
     lambda_: float, the fixed value of the deployment cost
     data: Dataset
     verbose: boolean, whether to print the running time of each Metropolis-Hastings algorithm
-    plot_size: boolean, whether to plot the evolution of the number of cities selected for each beta
-    plot_obj: boolean, whether to plot the evolution of the objectif function for each beta
+    plot: boolean, whether to plot the evolution of the the objectif function
+        and the number of cities selected for each beta
 
     Returns
     -------
-    S_star_approx: the approximation of the optimizing set.
+    S_approx: the approximation of the optimizing set.
     """
-
-    if plot_size:
-        fig_size, axs_size = plt.subplots(len(betas), figsize=(10, 30))
-        fig_size.suptitle('Evolution of the number of cities (lambda={})'.format(lambda_))
-    if plot_obj:
-        fig_obj, axs_obj = plt.subplots(len(betas), figsize=(10,30))
-        fig_obj.suptitle('Evolution of objectif function (lambda={})'.format(lambda_))
+    if plot:
+        fig, axs = plt.subplots(len(betas), figsize=(10, 5*len(betas)), constrained_layout=True)
+        fig.suptitle('Evolution of the approximate maximum (for lambda={})'.format(lambda_), fontsize=20)
 
     x = starting_state
+    best_x = x
 
-    best_x_visited = x
     # run Metropolis-Hastings algorithm for each beta
     for k, beta in enumerate(betas):
-        ax_size = axs_size[k] if plot_size else None
-        ax_obj = axs_obj[k] if plot_obj else None
+        axs = None
+        if plot :
+            ax_k = axs[k]
+            ax_k2 = ax_k.twinx()
+            axs = (ax_k, ax_k2)
 
         start = time.time()
-        x, best_x_visited = metropolis_hastings(beta, x, n_iter, best_x_visited, lambda_, data, ax_size, ax_obj)
+        x, best_x = metropolis_hastings(beta, x, n_iter, best_x, lambda_, data, axs)
         end = time.time()
 
         if verbose:
@@ -211,18 +203,13 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
                   .format(k + 1, len(betas), beta, end - start))
 
     # keep only the best state
-    if f(vect_to_S(best_x_visited), lambda_, data) > f(vect_to_S(x), lambda_, data):
-        x = best_x_visited
+    if f(vect_to_S(best_x), lambda_, data) > f(vect_to_S(x), lambda_, data):
+        x = best_x
 
     S_approx = vect_to_S(x)
 
-    if plot_size:
-        fig_size.tight_layout()
-        figtitle = 'plots/size_{}.pdf'.format(lambda_)
-        fig_size.savefig(figtitle)
-    if plot_obj:
-        fig_obj.tight_layout()
-        figtitle = 'plots/obj_{}.pdf'.format(lambda_)
-        fig_obj.savefig(figtitle)
+    if plot:
+        figtitle = 'plots/global_evol_{}.pdf'.format(lambda_)
+        fig.savefig(figtitle)
 
     return S_approx

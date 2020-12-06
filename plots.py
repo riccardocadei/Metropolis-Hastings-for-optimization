@@ -51,13 +51,13 @@ def plot_avg_lambda(G, lambdas, betas, n_iter, nb_instances, verbose=False):
     E = np.array(E)
 
     fig_obj, ax_obj = plt.subplots(figsize=(1 + len(lambdas), 4))
-    ax_obj.plot(lambdas, E[:, 0], '+', ls=':')
+    ax_obj.plot(lambdas, E[:, 0], 'b+', ls=':')
     ax_obj.set_xlabel("Lambda", fontsize=25)
     ax_obj.set_ylabel("Average max obj", fontsize=25)
     ax_obj.tick_params(labelsize=17)
 
     fig_size, ax_size = plt.subplots(figsize=(1 + len(lambdas), 4))
-    ax_size.plot(lambdas, E[:, 1], '+', ls=':')
+    ax_size.plot(lambdas, E[:, 1], 'r+', ls=':')
     ax_size.set_xlabel("Lambda", fontsize=25)
     ax_size.set_ylabel("Average maxi size", fontsize=25)
     ax_size.tick_params(labelsize=17)

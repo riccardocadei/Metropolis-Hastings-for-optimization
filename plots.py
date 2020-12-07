@@ -33,7 +33,7 @@ def sample_S_approx(datas, betas, lambda_, n_iter, verbose=False):
         list_lambdas.append(lambda_)
 
         if verbose:
-            print("[lambda={} : {}/{}]".format(lambda_, k + 1, nb_instances))
+            print("[lambda={} : {}/{}]".format(lambda_, k + 1, len(datas)))
         starting_state[ datas[k].v == np.max(datas[k].v)] = 0
 
     return list_S_approx, list_lambdas
@@ -50,21 +50,20 @@ def plot_avg_lambda(G, lambdas, betas, n_iter, nb_instances, verbose=False):
     E = [avg(datas, betas, lambda_, n_iter, verbose) for lambda_ in lambdas]
     E = np.array(E)
 
-
-    fig_obj, ax_obj = plt.subplots(figsize=(1 + len(lambdas), 6), constrained_layout=True)
+    fig, ax_obj = plt.subplots(figsize=(1 + len(lambdas), 6), constrained_layout=True)
     ax_obj.plot(lambdas, E[:, 0], 'b+', ls=':')
     ax_obj.set_xlabel("Lambda", fontsize=25)
-    ax_obj.set_ylabel("Average maximum of f", fontsize=25)
+    ax_obj.set_ylabel("Average maximum of f", color='blue', fontsize=25)
     ax_obj.tick_params(labelsize=17)
 
-    fig_size, ax_size = plt.subplots(figsize=(1 + len(lambdas), 6), constrained_layout=True)
+    ax_size = ax_obj.twinx()
     ax_size.plot(lambdas, E[:, 1], 'r+', ls=':')
     ax_size.set_xlabel("Lambda", fontsize=25)
-    ax_size.set_ylabel("Average size of S maximizing", fontsize=25)
+    ax_size.set_ylabel("Average size of S maximizing", color='red', fontsize=25)
     ax_size.tick_params(labelsize=17)
+
 
     data_name = "G1" if isinstance(datas[0], G1) else "G2"
 
     plt.tight_layout()
-    fig_obj.savefig('plots\\avg_obj_{}.pdf'.format(data_name))
-    fig_size.savefig('plots\\avg_size_{}.pdf'.format(data_name))
+    fig.savefig('plots\\avg_{}.pdf'.format(data_name))

@@ -27,6 +27,7 @@ The library for visualization is `matplotlib`.
 ### Algorithm
 
 `helpers.py`: useful functions to define the problem 
+
 `markov_algos.py`: Metropolis-Hasting based algorithm implementation
 
 ### Notebook
@@ -35,5 +36,6 @@ The library for visualization is `matplotlib`.
 
 ### Report
 
-`references/report.pdf`: a 4-pages report of the complete solution.
-`references/pb_statement.pdf`: the problem statement of this project.
+`references/report.pdf`: a 4-pages report of the complete solution
+
+`references/pb_statement.pdf`: the problem statement of this project

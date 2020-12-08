@@ -231,7 +231,7 @@ def simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=Fa
         axs[1].tick_params(labelsize=17)
 
         data_name = "G1" if isinstance(data, G1) else "G2"
-        figtitle = 'plots\global_evol_{}_{}.pdf'.format(lambda_, data_name)
+        figtitle = 'plots\global_evol_{}_{}.png'.format(lambda_, data_name)
         fig.savefig(figtitle)
 
     return S_approx

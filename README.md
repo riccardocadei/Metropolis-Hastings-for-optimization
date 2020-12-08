@@ -36,3 +36,4 @@ The library for visualization is `matplotlib`.
 ### Report
 
 `references/report.pdf`: a 4-pages report of the complete solution.
+`references/pb_statement.pdf`: the problem statement of this project.

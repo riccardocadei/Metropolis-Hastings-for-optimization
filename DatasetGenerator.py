@@ -5,6 +5,12 @@ import scipy.stats as st
 import scipy as sp
 import numpy as np
 
+class Dataset_competition(object):
+    def __init__(self, N=100):
+        self.N = N
+        self.x = None
+        self.v = None
+        self.d = None
 
 class Dataset(object):
     def __init__(self, N=100):

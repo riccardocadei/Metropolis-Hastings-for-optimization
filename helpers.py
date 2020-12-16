@@ -4,9 +4,11 @@ Some helpful functions to run markov chain simulations.
 import scipy.stats as st
 import numpy as np
 import scipy as sp
+import pandas as pd
 import matplotlib.pyplot as plt
 import copy
 import time
+from DatasetGenerator import *
 
 
 def vect_to_S(x):
@@ -77,3 +79,36 @@ def max_distance(x, dists, max_cities=False):
         city_maxs[n] = (S_x[i], S_x[j])
 
     return max_dist, city_maxs
+
+
+### Function for the competition:
+
+def preprocessing_data(csv_file):
+    """
+    Function used to load the data from the csv file to panda
+    """
+
+    #Importing the csv file as Dataframe
+    df = pd.read_csv(csv_file, index_col="city id")
+
+    #Computing starting state
+    starting_state = np.zeros(len(df))
+    starting_state[df['normalized population'] == df['normalized population'].max()] = 1
+
+    #Converting the df to a Dataset object
+    data = Dataset_competition(N=len(df))
+    data.x = df[['position x', 'position y']].to_numpy()
+    data.v = df['normalized population'].to_numpy()
+    data.d = sp.spatial.distance.cdist(data.x, data.x, 'euclidean')
+
+    return starting_state, data
+
+def submission(csv_file, Sapprox, save_file_name):
+
+    #Importing the csv file as Dataframe
+    df_submission = pd.read_csv(csv_file, usecols = ["city id"])
+
+    df_submission['1/0 variable'] = 0
+    df_submission['1/0 variable'][Sapprox] = 1
+    
+    df_submission.to_csv(save_file_name, index=False)

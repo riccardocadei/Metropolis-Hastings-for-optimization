@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 from helpers import preprocessing_data, submission, f
 from markov_algos import simulated_annealing
@@ -11,7 +12,7 @@ When the time is over, we'll just submit the best one we got for the two N they'
 """
 
 ### Given in the assignment
-lambda_ = 100
+lambda_ = 0.5
 
 ### TO TUNE FOR A DATASET OF SIZE N = tens of thousands of cities AND N = thousands of cities. So N = 50 000 and N = 5 000 ???
 """
@@ -24,8 +25,9 @@ betas = np.logspace(0, 3, 7) #TO TUNE
 
 def compute_Sapprox(csv_file):
     starting_state, data = preprocessing_data(csv_file)
+    #starting_state = np.array(pd.read_csv('startingstate.csv').iloc[:,1])
     N = len(starting_state)
-    Sapprox = simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=False, plot=False)
+    Sapprox = simulated_annealing(starting_state, betas, n_iter, lambda_, data, verbose=True, plot=True)
 
     #Computing score of this run with the Sapprox found and save it in a file called Aquarium_submission_SCORE with SCORE being the score of the run.
     score = f(np.array(Sapprox), lambda_, data)
